@@ -1,4 +1,6 @@
 __pycache__
 /tests
 /old
-/*.wav
+*.wav
+*.ogg
+*.flac
