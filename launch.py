@@ -36,9 +36,9 @@ if __name__ == '__main__':
                         action="store_true")
     parser.add_argument("-t", "--length",
                         help="How long the file should be (in seconds)",
-                        type=int,
+                        type=str,
                         metavar="LENGTH",
-                        default=60)
+                        default="60")
     parser.add_argument("-o", "--output-file",
                         help="Path to the output file (including extnension)",
                         default="out.wav",

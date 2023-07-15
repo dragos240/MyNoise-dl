@@ -91,15 +91,16 @@ class GeneratedAudioFile:
             SyntaxError: Wrong format for `length`
         """
         secs = 0
-        parts = length.split(":")
-        if len(parts) == 2:
-            secs = int(parts[0]) * 60
-            secs += int(parts[1])
-        elif len(parts) == 1:
-            secs = int(length)
+        if ':' in length:
+            if length.count(":") == 1:
+                parts = length.split(":")
+                secs = int(parts[0]) * 60
+                secs += int(parts[1])
+            else:
+                raise SyntaxError(
+                    "Must be mins:sec or sec. Any other format is unsupported")
         else:
-            raise SyntaxError(
-                "Must be mins:sec or sec. Any other format is unsupported")
+            secs = int(length)
         looped_samples: List[AudioSegment] = []
         time_in_ms = secs * 1000
         for sample in self.samples:
