@@ -19,6 +19,7 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser):
         filename: str = args.output_file
         extension = filename.split(".")[-1]
 
+        print("Exporting...")
         result.export(filename, format=extension)
         print("Exported generator to", filename)
     else:
