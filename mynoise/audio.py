@@ -1,10 +1,11 @@
-from math import ceil, floor
+from math import ceil
 import os
-
 from typing import List
 
 from pydub import AudioSegment
 from pydub.effects import normalize
+
+from .utils import print_progress
 
 ASSETS_PATH = "./downloaded-assets"
 
@@ -16,17 +17,6 @@ class GeneratedAudioFile:
         samples: All loaded audio samples
     """
     samples: List[AudioSegment] = []
-
-    @staticmethod
-    def print_progress(step_name: str,
-                       current_offset: int,
-                       last_printed_percent: int,
-                       total: int):
-        current_percent = floor(current_offset / total * 100)
-        if (current_percent - last_printed_percent) >= 10:
-            print(f"{step_name}: {current_percent:d}%")
-
-        return current_percent
 
     def load_file(self, path: str):
         """Load a audio file by path into `samples`
@@ -56,10 +46,10 @@ class GeneratedAudioFile:
                 total = len(filenames)
                 for filename_idx, filename in enumerate(filenames):
                     last_printed_percent \
-                        = self.print_progress("Loading files",
-                                              filename_idx,
-                                              last_printed_percent,
-                                              total)
+                        = print_progress("Loading files",
+                                         filename_idx,
+                                         last_printed_percent,
+                                         total)
                     self.load_file(os.path.join(fullpath, filename))
         else:
             raise Exception("ERR: No generator by that name: ")
@@ -123,12 +113,12 @@ class GeneratedAudioFile:
         time_in_ms: int = secs * 1000
         len_samples: int = len(self.samples)
         last_printed_percent: int = 0
-        idx: int
+        sample_idx: int
         for sample_idx, sample in enumerate(self.samples):
-            last_printed_percent = self.print_progress("Overlaying",
-                                                       sample_idx,
-                                                       last_printed_percent,
-                                                       len_samples)
+            last_printed_percent = print_progress("Overlaying",
+                                                  sample_idx,
+                                                  last_printed_percent,
+                                                  len_samples)
             combined = AudioSegment.empty()
             n_loops = ceil(time_in_ms / len(sample))
             # Make enough loops to fill up time_in_ms

@@ -4,6 +4,7 @@ import argparse
 from pydub import AudioSegment
 
 from mynoise.audio import GeneratedAudioFile
+from mynoise.fetch import fetch_from_url
 
 
 def main(args: argparse.Namespace, parser: argparse.ArgumentParser):
@@ -14,7 +15,10 @@ def main(args: argparse.Namespace, parser: argparse.ArgumentParser):
         print("\n".join(gens))
         return
     if args.generator:
-        af.load_generator(args.generator)
+        generator: str = args.generator
+        if generator.startswith("https"):
+            generator = fetch_from_url(generator)
+        af.load_generator(generator)
         result: AudioSegment = af.recursively_overlay(args.length)
         filename: str = args.output_file
         extension = filename.split(".")[-1]
